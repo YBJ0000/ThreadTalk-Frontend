@@ -10,7 +10,7 @@ document.body.appendChild(renderer.domElement);
 
 // Camera position
 camera.position.z = 50;
-camera.position.y = -15;
+camera.position.y = -13;
 
 // Particle system
 const particleCount = 40000;
