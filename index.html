@@ -10,19 +10,19 @@
     <div class="auth-container">
         <!-- 登录表单 -->
         <form id="loginForm" class="auth-form active">
-            <input type="text" class="auth-input username-input" id="loginUsername" placeholder="用户名" autocomplete="off">
-            <input type="password" class="auth-input" placeholder="密码">
-            <button type="submit" class="auth-button">登录</button>
-            <p class="switch-text">还没有账号？<button type="button" class="switch-button" onclick="switchForm('register')">注册</button></p>
+            <input type="text" class="auth-input username-input" id="loginUsername" placeholder="Username" autocomplete="off">
+            <input type="password" class="auth-input" placeholder="Password">
+            <button type="submit" class="auth-button">Login</button>
+            <p class="switch-text">Have no account?<button type="button" class="switch-button" onclick="switchForm('register')">Sign Up</button></p>
         </form>
 
         <!-- 注册表单 -->
         <form id="registerForm" class="auth-form">
-            <input type="text" class="auth-input username-input" id="registerUsername" placeholder="用户名" autocomplete="off">
-            <input type="password" class="auth-input" placeholder="密码">
-            <input type="password" class="auth-input" placeholder="确认密码">
-            <button type="submit" class="auth-button">注册</button>
-            <p class="switch-text">已有账号？<button type="button" class="switch-button" onclick="switchForm('login')">登录</button></p>
+            <input type="text" class="auth-input username-input" id="registerUsername" placeholder="Username" autocomplete="off">
+            <input type="password" class="auth-input" placeholder="Password">
+            <input type="password" class="auth-input" placeholder="Confirm Password">
+            <button type="submit" class="auth-button">Sign Up</button>
+            <p class="switch-text">Have an account?<button type="button" class="switch-button" onclick="switchForm('login')">Login</button></p>
         </form>
     </div>
     <script type="module" src="/src/main.js"></script>

@@ -1,3 +1,5 @@
+import { gsap } from 'gsap';  // 确保导入了gsap
+
 export class Auth {
     constructor(particleSystem) {
         this.particleSystem = particleSystem;
@@ -21,22 +23,38 @@ export class Auth {
         if (e.target.value.trim()) {
             this.particleSystem.transformToText(e.target.value);
         } else {
-            const targetPositions = new Float32Array(this.particleSystem.particleCount * 3);
-            for (let i = 0; i < this.particleSystem.particleCount; i++) {
-                targetPositions[i * 3] = (Math.random() - 0.5) * 100;
-                targetPositions[i * 3 + 1] = (Math.random() - 0.5) * 100;
-                targetPositions[i * 3 + 2] = (Math.random() - 0.5) * 100;
-            }
-
-            gsap.to(this.particleSystem.particles.geometry.attributes.position.array, {
-                endArray: targetPositions,
-                duration: 2,
-                ease: 'power2.inOut',
-                onUpdate: () => {
-                    this.particleSystem.particles.geometry.attributes.position.needsUpdate = true;
-                }
-            });
+            // 使用一个专门的方法来重置粒子到漩涡状态
+            this.resetParticles();
         }
+    }
+
+    resetParticles() {
+        // 创建随机位置
+        const targetPositions = new Float32Array(this.particleSystem.particleCount * 3);
+        for (let i = 0; i < this.particleSystem.particleCount; i++) {
+            targetPositions[i * 3] = (Math.random() - 0.5) * 100;
+            targetPositions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+            targetPositions[i * 3 + 2] = (Math.random() - 0.5) * 100;
+        }
+
+        // 使用GSAP动画过渡到随机位置
+        gsap.to(this.particleSystem.particles.geometry.attributes.position.array, {
+            endArray: targetPositions,
+            duration: 2,
+            ease: 'power2.inOut',
+            onUpdate: () => {
+                this.particleSystem.particles.geometry.attributes.position.needsUpdate = true;
+            },
+            onComplete: () => {
+                // 确保动画完成后粒子系统知道应该显示漩涡
+                const inputs = document.querySelectorAll('.username-input');
+                const hasText = Array.from(inputs).some(input => input.value.trim());
+                if (!hasText) {
+                    // 强制更新一次，确保回到漩涡状态
+                    this.particleSystem.animateVortex();
+                }
+            }
+        });
     }
 
     switchForm(type) {
