@@ -42,16 +42,24 @@ export class Auth {
     switchForm(type) {
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
+        const authContainer = document.querySelector('.auth-container');
+        
+        // 先将容器设为半透明
+        authContainer.style.opacity = '0.3';
         
         if (type === 'register') {
             loginForm.classList.remove('active');
             setTimeout(() => {
                 registerForm.classList.add('active');
+                // 恢复容器透明度
+                authContainer.style.opacity = '1';
             }, 300);
         } else {
             registerForm.classList.remove('active');
             setTimeout(() => {
                 loginForm.classList.add('active');
+                // 恢复容器透明度
+                authContainer.style.opacity = '1';
             }, 300);
         }
     }
