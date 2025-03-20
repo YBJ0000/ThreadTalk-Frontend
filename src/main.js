@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
+import { ParticleSystem } from './particles';
+import { Auth } from './auth';
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -171,16 +173,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 修改 animate 函数
-function animate() {
-    requestAnimationFrame(animate);
-    const usernameInputs = document.querySelectorAll('.username-input');
-    const hasText = Array.from(usernameInputs).some(input => input.value.trim());
-    
-    if (!hasText) {
-        animateVortex();
+document.addEventListener('DOMContentLoaded', () => {
+    const particleSystem = new ParticleSystem();
+    const auth = new Auth(particleSystem);
+
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        const usernameInputs = document.querySelectorAll('.username-input');
+        const hasText = Array.from(usernameInputs).some(input => input.value.trim());
+        
+        if (!hasText) {
+            particleSystem.animateVortex();
+        }
+        particleSystem.render();
     }
-    renderer.render(scene, camera);
-}
+
+    // Handle window resize
+    window.addEventListener('resize', () => particleSystem.handleResize());
+
+    // Start animation
+    animate();
+});
 
 // Handle window resize
 window.addEventListener('resize', () => {
