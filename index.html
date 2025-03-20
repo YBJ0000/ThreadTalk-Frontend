@@ -7,7 +7,26 @@
     <link rel="stylesheet" href="/src/styles/main.css">
 </head>
 <body>
-    <input type="text" class="text-input" placeholder="Type text to transform particles...">
+    <div class="auth-container">
+        <!-- 登录表单 -->
+        <form id="loginForm" class="auth-form active">
+            <h2>登录</h2>
+            <input type="text" class="auth-input username-input" id="loginUsername" placeholder="用户名" autocomplete="off">
+            <input type="password" class="auth-input" placeholder="密码">
+            <button type="submit" class="auth-button">登录</button>
+            <p class="switch-text">还没有账号？<button type="button" class="switch-button" onclick="switchForm('register')">注册</button></p>
+        </form>
+
+        <!-- 注册表单 -->
+        <form id="registerForm" class="auth-form">
+            <h2>注册</h2>
+            <input type="text" class="auth-input username-input" id="registerUsername" placeholder="用户名" autocomplete="off">
+            <input type="password" class="auth-input" placeholder="密码">
+            <input type="password" class="auth-input" placeholder="确认密码">
+            <button type="submit" class="auth-button">注册</button>
+            <p class="switch-text">已有账号？<button type="button" class="switch-button" onclick="switchForm('login')">登录</button></p>
+        </form>
+    </div>
     <script type="module" src="/src/main.js"></script>
 </body>
 </html>

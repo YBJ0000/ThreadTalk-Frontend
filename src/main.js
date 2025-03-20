@@ -115,38 +115,70 @@ function transformToText(text) {
   });
 }
 
-// Handle text input
-const textInput = document.querySelector('.text-input');
-textInput.addEventListener('input', (e) => {
-  if (e.target.value.trim()) {
-    transformToText(e.target.value);
-  } else {
-    // Reset particles to vortex state when text is cleared
-    const targetPositions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount; i++) {
-      targetPositions[i * 3] = (Math.random() - 0.5) * 100;
-      targetPositions[i * 3 + 1] = (Math.random() - 0.5) * 100;
-      targetPositions[i * 3 + 2] = (Math.random() - 0.5) * 100;
-    }
+// 移除原有的文本输入处理代码
+document.addEventListener('DOMContentLoaded', () => {
+    const usernameInputs = document.querySelectorAll('.username-input');
+    usernameInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.trim()) {
+                transformToText(e.target.value);
+            } else {
+                // Reset particles to vortex state when text is cleared
+                const targetPositions = new Float32Array(particleCount * 3);
+                for (let i = 0; i < particleCount; i++) {
+                    targetPositions[i * 3] = (Math.random() - 0.5) * 100;
+                    targetPositions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+                    targetPositions[i * 3 + 2] = (Math.random() - 0.5) * 100;
+                }
 
-    gsap.to(particles.geometry.attributes.position.array, {
-      endArray: targetPositions,
-      duration: 2,
-      ease: 'power2.inOut',
-      onUpdate: () => {
-        particles.geometry.attributes.position.needsUpdate = true;
-      }
+                gsap.to(particles.geometry.attributes.position.array, {
+                    endArray: targetPositions,
+                    duration: 2,
+                    ease: 'power2.inOut',
+                    onUpdate: () => {
+                        particles.geometry.attributes.position.needsUpdate = true;
+                    }
+                });
+            }
+        });
     });
-  }
+
+    // 添加表单切换功能
+    window.switchForm = function(type) {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        
+        if (type === 'register') {
+            loginForm.classList.remove('active');
+            setTimeout(() => {
+                registerForm.classList.add('active');
+            }, 300);
+        } else {
+            registerForm.classList.remove('active');
+            setTimeout(() => {
+                loginForm.classList.add('active');
+            }, 300);
+        }
+    };
+
+    // 阻止表单默认提交行为
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+        });
+    });
 });
 
-// Animation loop
+// 修改 animate 函数
 function animate() {
-  requestAnimationFrame(animate);
-  if (!textInput.value.trim()) {
-    animateVortex();
-  }
-  renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+    const usernameInputs = document.querySelectorAll('.username-input');
+    const hasText = Array.from(usernameInputs).some(input => input.value.trim());
+    
+    if (!hasText) {
+        animateVortex();
+    }
+    renderer.render(scene, camera);
 }
 
 // Handle window resize
