@@ -123,24 +123,19 @@ class Dashboard {
       const threadsList = document.getElementById('threadsList');
       threadsList.innerHTML = '';
 
-      // 由于后端直接返回 ID 数组，我们需要为每个 ID 创建一个帖子元素
       threads.forEach(threadId => {
         const threadElement = document.createElement('div');
         threadElement.className = 'thread-item';
-        threadElement.dataset.threadId = threadId; // 设置正确的 threadId
+        threadElement.dataset.threadId = threadId;
         
-        // 获取单个帖子的详细信息
         ApiService.getThread(this.token, threadId)
           .then(threadDetail => {
             threadElement.innerHTML = `
               <h3>${threadDetail.title || 'Untitled'}</h3>
-              <p>${threadDetail.content ? 
-                `${threadDetail.content.substring(0, 100)}${threadDetail.content.length > 100 ? '...' : ''}` 
-                : 'No content'}</p>
             `;
           })
           .catch(error => {
-            threadElement.innerHTML = `<p>Error loading thread details</p>`;
+            threadElement.innerHTML = `<p>Error loading thread</p>`;
             console.error('Error loading thread:', error);
           });
 
