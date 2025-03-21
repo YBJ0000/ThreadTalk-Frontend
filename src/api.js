@@ -165,6 +165,47 @@ class ApiService {
       throw error;
     }
   }
+
+  static async getUserProfile(token, userId) {
+    try {
+      const response = await fetch(`${API_URL}/user?userId=${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async updateUserProfile(token, userData) {
+    try {
+      const response = await fetch(`${API_URL}/user`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default ApiService;

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Interactive Particle Effects</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <link rel="stylesheet" href="/src/styles/dashboard.css">
+    <link rel="stylesheet" href="/src/styles/profile.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>User Profile</h1>
+            <div class="header-buttons">
+                <button onclick="window.location.href='/dashboard.html'" class="auth-button">Back to Dashboard</button>
+                <button id="logoutBtn" class="auth-button">Logout</button>
+            </div>
+        </header>
+
+        <div class="profile-container">
+            <div class="profile-image-section">
+                <img id="profileImage" src="" alt="Profile Image">
+                <input type="file" id="imageInput" accept="image/*" style="display: none">
+                <button id="changeImageBtn" class="auth-button">Change Image</button>
+            </div>
+            
+            <div class="profile-details">
+                <div class="input-group">
+                    <label for="nameInput">Name</label>
+                    <input type="text" id="nameInput" class="auth-input">
+                </div>
+                
+                <div class="input-group">
+                    <label for="emailInput">Email</label>
+                    <input type="email" id="emailInput" class="auth-input">
+                </div>
+                
+                <div class="input-group">
+                    <label for="passwordInput">New Password (optional)</label>
+                    <input type="password" id="passwordInput" class="auth-input">
+                </div>
+
+                <button id="saveProfileBtn" class="auth-button">Save Changes</button>
+            </div>
+
+            <div class="watching-threads">
+                <h3>Threads You're Watching</h3>
+                <div id="watchingList"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/profile.js"></script>
+</body>
+</html>
