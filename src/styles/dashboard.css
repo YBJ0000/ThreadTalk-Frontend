@@ -18,6 +18,24 @@
   backdrop-filter: blur(5px);
 }
 
+.header-left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#welcomeMessage {
+    text-align: center;
+    flex: 2;
+    margin: 0;
+}
+
 .content-container {
   display: flex;
   gap: 20px;
