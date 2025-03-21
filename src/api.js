@@ -45,7 +45,6 @@ class ApiService {
 
   static async getThreads(token, start = 0) {
     try {
-      console.log('Fetching threads with token:', token); // 添加这行来检查 token
       const response = await fetch(`${API_URL}/threads?start=${start}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -57,105 +56,18 @@ class ApiService {
         throw new Error(error.error);
       }
 
-      const data = await response.json();
-      console.log('API response:', data); // 添加这行来查看 API 响应
-      return data;
+      return await response.json();
     } catch (error) {
-      console.error('Error fetching threads:', error); // 添加错误日志
       throw error;
     }
-}
+  }
 
   static async getThread(token, threadId) {
     try {
-      // 使用正确的查询参数格式
       const response = await fetch(`${API_URL}/thread?id=${threadId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error);
-      }
-
-      return await response.json();
-    } catch (error) {
-      throw error;
-    }
-}
-
-static async getComments(token, threadId) {
-    try {
-      const response = await fetch(`${API_URL}/comments?threadId=${threadId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error);
-      }
-
-      return await response.json();
-    } catch (error) {
-      throw error;
-    }
-}
-
-static async createComment(token, threadId, content) {
-    try {
-      const response = await fetch(`${API_URL}/comment`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ threadId, content }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error);
-      }
-
-      return await response.json();
-    } catch (error) {
-      throw error;
-    }
-}
-
-static async deleteComment(token, commentId) {
-    try {
-      const response = await fetch(`${API_URL}/comment?id=${commentId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error);
-      }
-
-      return await response.json();
-    } catch (error) {
-      throw error;
-    }
-}
-
-  static async createThread(token, title, isPublic, content) {
-    try {
-      const response = await fetch(`${API_URL}/thread`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ title, isPublic, content }),
       });
 
       if (!response.ok) {
@@ -188,15 +100,15 @@ static async deleteComment(token, commentId) {
     }
   }
 
-  static async createComment(token, threadId, content) {
+  static async createComment(token, threadId, content, parentCommentId = null) {
     try {
-      const response = await fetch(`${API_URL}/thread/comment`, {
+      const response = await fetch(`${API_URL}/comment`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ threadId, content }),
+        body: JSON.stringify({ threadId, content, parentCommentId }),
       });
 
       if (!response.ok) {
@@ -212,11 +124,35 @@ static async deleteComment(token, commentId) {
 
   static async deleteComment(token, commentId) {
     try {
-      const response = await fetch(`${API_URL}/thread/comment?commentId=${commentId}`, {
+      const response = await fetch(`${API_URL}/comment`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ id: commentId }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async createThread(token, title, isPublic, content) {
+    try {
+      const response = await fetch(`${API_URL}/thread`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, isPublic, content }),
       });
 
       if (!response.ok) {
