@@ -65,3 +65,21 @@
 .thread-card:hover {
     background: rgba(255, 255, 255, 0.1);
 }
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.dashboard-container {
+    position: relative;
+    z-index: 1;
+}
+
+#profileName {
+    color: white;
+    font-size: 2em;
+    margin: 0;
+}

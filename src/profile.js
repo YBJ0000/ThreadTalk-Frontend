@@ -1,4 +1,5 @@
 import ApiService from './api';
+import { ParticleSystem } from './particles';
 
 class Profile {
     constructor() {
@@ -9,8 +10,10 @@ class Profile {
             return;
         }
 
+        this.particleSystem = new ParticleSystem();
         this.setupEventListeners();
         this.loadUserProfile();
+        this.animate();
     }
 
     setupEventListeners() {
@@ -64,11 +67,22 @@ class Profile {
             document.getElementById('nameInput').value = profile.name || '';
             document.getElementById('emailInput').value = profile.email || '';
             document.getElementById('profileImage').src = profile.image || '';
+            document.getElementById('profileName').textContent = profile.name || '';
+
+            // 更新粒子文字
+            if (profile.name) {
+                this.particleSystem.transformToText(profile.name);
+            }
 
             this.loadWatchingThreads(profile.threadsWatching || []);
         } catch (error) {
             alert(error.message);
         }
+    }
+
+    animate() {
+        requestAnimationFrame(() => this.animate());
+        this.particleSystem.render();
     }
 
     async loadWatchingThreads(threadIds) {
