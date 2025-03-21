@@ -80,20 +80,22 @@ class Dashboard {
       document.getElementById('newThreadModal').classList.add('hidden');
     });
 
+    // 在 setupEventListeners 方法中
     document.getElementById('submitThread').addEventListener('click', async () => {
-      const title = document.getElementById('threadTitle').value;
-      const content = document.getElementById('threadContent').value;
+      const title = document.getElementById('newThreadTitle').value;
+      const content = document.getElementById('newThreadContent').value;
       const isPublic = document.getElementById('threadIsPublic').checked;
+      
       if (!title || !content) {
         alert('Please fill in all fields');
         return;
       }
-
+    
       try {
         await ApiService.createThread(this.token, title, isPublic, content);
         document.getElementById('newThreadModal').classList.add('hidden');
-        document.getElementById('threadTitle').value = '';
-        document.getElementById('threadContent').value = '';
+        document.getElementById('newThreadTitle').value = '';
+        document.getElementById('newThreadContent').value = '';
         this.loadThreads();
       } catch (error) {
         alert(error.message);
