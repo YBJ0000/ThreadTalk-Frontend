@@ -15,6 +15,10 @@ class Dashboard {
     this.setupParticles();
     this.setupEventListeners();
     this.loadThreads();
+    
+    // 获取用户信息并显示欢迎动画
+    this.showWelcomeAnimation();
+    
     this.animate();
   }
 
@@ -203,6 +207,86 @@ class Dashboard {
     } catch (error) {
       alert(error.message);
     }
+  }
+
+  async showWelcomeAnimation() {
+    try {
+        const profile = await ApiService.getUserProfile(this.token, this.userId);
+        if (profile.name) {
+            // 显示欢迎文字
+            const welcomeText = `Welcome, ${profile.name}!`;
+            const positions = this.particles.geometry.attributes.position.array;
+            
+            // 先转换成欢迎文字
+            this.transformToText(welcomeText);
+            
+            // 5秒后恢复漩涡效果
+            setTimeout(() => {
+                // 使用GSAP创建平滑过渡
+                const targetPositions = new Float32Array(positions.length);
+                for (let i = 0; i < positions.length; i += 3) {
+                    targetPositions[i] = (Math.random() - 0.5) * 100;
+                    targetPositions[i + 1] = (Math.random() - 0.5) * 100;
+                    targetPositions[i + 2] = (Math.random() - 0.5) * 100;
+                }
+                
+                gsap.to(positions, {
+                    endArray: targetPositions,
+                    duration: 2,
+                    ease: "power2.inOut",
+                    onUpdate: () => {
+                        this.particles.geometry.attributes.position.needsUpdate = true;
+                    }
+                });
+            }, 3000);
+        }
+    } catch (error) {
+        console.error('Error loading welcome animation:', error);
+    }
+}
+
+  // 添加文字转换方法（从 ParticleSystem 类复制过来）
+  transformToText(text) {
+      // 创建临时 canvas 用于渲染文字
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 2048;
+      canvas.height = 256;
+  
+      // 设置文字样式并渲染
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '120px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+  
+      // 获取像素数据
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      const positions = this.particles.geometry.attributes.position.array;
+      let particleIndex = 0;
+  
+      // 根据文字像素重新排列粒子
+      for (let i = 0; particleIndex < positions.length / 3 && i < imageData.length; i += 4) {
+          if (imageData[i] > 128) {
+              const x = ((i / 4) % canvas.width - canvas.width / 2) * 0.1;
+              const y = (Math.floor((i / 4) / canvas.width) - canvas.height / 2) * 0.1;
+              
+              gsap.to(positions, {
+                  duration: 2,
+                  ease: "power2.inOut",
+                  [particleIndex * 3]: x,
+                  [particleIndex * 3 + 1]: -y,
+                  [particleIndex * 3 + 2]: 0,
+                  onUpdate: () => {
+                      this.particles.geometry.attributes.position.needsUpdate = true;
+                  }
+              });
+              
+              particleIndex++;
+          }
+      }
   }
 
   animate() {
