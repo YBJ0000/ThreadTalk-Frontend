@@ -1,0 +1,201 @@
+.dashboard-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  color: white;
+  z-index: 1;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.content-container {
+  display: flex;
+  gap: 20px;
+  height: calc(100vh - 120px);
+}
+
+.threads-section {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+  overflow-y: auto;
+}
+
+.thread-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.threads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.thread-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.thread-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.thread-detail-content {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.thread-detail-content h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.thread-metadata {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 20px;
+}
+
+.thread-body {
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.thread-detail {
+  display: none;
+  flex: 2;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.thread-detail.hidden {
+  display: none;
+}
+
+.thread-detail:not(.hidden) {
+  display: block;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.comments-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comment-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.comment-form {
+  margin-top: 20px;
+}
+
+.comment-form textarea {
+  width: 100%;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  resize: vertical;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+}
+
+.modal-content textarea {
+  height: 200px;
+  margin: 10px 0;
+  resize: vertical;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Interactive Particle Effects</title>
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="stylesheet" href="/src/styles/dashboard.css">
+</head>
+
+<body>
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1 id="welcomeMessage"></h1>
+      <button id="logoutBtn" class="auth-button">Logout</button>
+    </header>
+
+    <div class="content-container">
+      <div class="threads-section">
+        <div class="thread-header">
+          <h2>Threads</h2>
+          <button id="newThreadBtn" class="auth-button">New Thread</button>
+        </div>
+        <div id="threadsList" class="threads-list"></div>
+      </div>
+
+      <div id="threadDetail" class="thread-detail hidden">
+        <button class="back-button" onclick="hideThreadDetail()">← Back to Threads</button>
+        <div id="threadContent"></div>
+        <div class="comments-section">
+          <h3>Comments</h3>
+          <div id="commentsList"></div>
+          <div class="comment-form">
+            <textarea id="newComment" placeholder="Write a comment..."></textarea>
+            <button id="submitComment" class="auth-button">Post Comment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Thread Modal -->
+    <div id="newThreadModal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Create New Thread</h2>
+        <input type="text" id="threadTitle" placeholder="Thread Title" class="auth-input">
+        <textarea id="threadContent" placeholder="Thread Content" class="auth-input"></textarea>
+        <div class="thread-visibility">
+          <input type="checkbox" id="threadIsPublic" checked>
+          <label for="threadIsPublic">Make this thread public</label>
+        </div>
+        <div class="modal-buttons">
+          <button id="cancelThread" class="auth-button">Cancel</button>
+          <button id="submitThread" class="auth-button">Create Thread</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/dashboard.js"></script>
+</body>
+
+</html>
