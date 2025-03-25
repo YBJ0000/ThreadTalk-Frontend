@@ -38,7 +38,7 @@ class Dashboard {
   hideThreadDetail() {
     document.getElementById('threadDetail').classList.add('hidden');
     // 更新 URL 为基础路径
-    window.history.pushState({}, '', '/dashboard');
+    window.history.pushState({}, '', '/dashboard.html');
 }
 
   // 删除整个 setupNewThreadHandler 方法，因为这些功能已经在 setupEventListeners 中实现
@@ -264,7 +264,7 @@ class Dashboard {
         const isWatched = thread.watchees && thread.watchees[this.userId];
 
         // 更新 URL，但不刷新页面
-        const newUrl = `/dashboard?thread=${threadId}`;
+        const newUrl = `/dashboard.html?thread=${threadId}`;
         window.history.pushState({ threadId }, '', newUrl);
   
         const threadDetail = document.getElementById('threadDetail');

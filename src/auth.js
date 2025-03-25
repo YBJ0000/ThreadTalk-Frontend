@@ -32,7 +32,7 @@ export class Auth {
         this.userId = response.userId;
         localStorage.setItem('token', this.token);
         localStorage.setItem('userId', this.userId);
-        window.location.href = '/dashboard';
+        window.location.href = '/dashboard.html';
       } catch (error) {
         alert(error.message);
       }
@@ -60,7 +60,7 @@ export class Auth {
         this.userId = response.userId;
         localStorage.setItem('token', this.token);
         localStorage.setItem('userId', this.userId);
-        window.location.href = '/dashboard';
+        window.location.href = '/dashboard.html';
       } catch (error) {
         alert(error.message);
       }
