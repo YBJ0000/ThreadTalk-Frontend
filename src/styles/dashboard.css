@@ -248,3 +248,18 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+.thread-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-thread-btn {
+  padding: 5px 15px;
+  font-size: 14px;
+  background: rgba(255, 59, 48, 0.8);
+}
+
+.delete-thread-btn:hover {
+  background: rgba(255, 59, 48, 1);
+}

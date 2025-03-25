@@ -205,12 +205,11 @@ class Dashboard {
     }
 }
 
-  // 在 showThreadDetail 方法中修改 threadContent.innerHTML
   async showThreadDetail(threadId) {
       try {
         const thread = await ApiService.getThread(this.token, threadId);
         this.currentThreadId = threadId;
-        this.currentThread = thread; // 保存当前线程数据
+        this.currentThread = thread;
   
         const threadDetail = document.getElementById('threadDetail');
         const threadContent = document.getElementById('threadContent');
@@ -221,7 +220,10 @@ class Dashboard {
             <div class="thread-header">
               <h2>${thread.title}</h2>
               ${thread.creatorId === parseInt(this.userId) ? `
-                <button class="auth-button edit-thread-btn" onclick="window.dashboard.showEditThreadModal()">Edit Thread</button>
+                <div class="thread-actions">
+                  <button class="auth-button edit-thread-btn" onclick="window.dashboard.showEditThreadModal()">Edit</button>
+                  <button class="auth-button delete-thread-btn" onclick="window.dashboard.confirmDeleteThread()">Delete</button>
+                </div>
               ` : ''}
             </div>
             <div class="thread-metadata">
@@ -237,6 +239,24 @@ class Dashboard {
         this.loadComments(threadId);
       } catch (error) {
         alert(error.message);
+      }
+  }
+  
+  // 添加删除确认方法
+  confirmDeleteThread() {
+      if (confirm('确定要删除这个帖子吗？此操作不可撤销。')) {
+          this.deleteThread();
+      }
+  }
+  
+  // 添加删除帖子方法
+  async deleteThread() {
+      try {
+          await ApiService.deleteThread(this.token, this.currentThreadId);
+          document.getElementById('threadDetail').classList.add('hidden');
+          this.loadThreads(); // 刷新帖子列表
+      } catch (error) {
+          alert(error.message);
       }
   }
   

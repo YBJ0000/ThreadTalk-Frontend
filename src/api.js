@@ -228,6 +228,28 @@ class ApiService {
       throw error;
     }
   }
+
+  static async deleteThread(token, threadId) {
+    try {
+      const response = await fetch(`${API_URL}/thread`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: threadId }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default ApiService;
