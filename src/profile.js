@@ -88,7 +88,7 @@ class Profile {
                     <p>${thread.content.substring(0, 100)}${thread.content.length > 100 ? '...' : ''}</p>
                 `;
                 threadElement.addEventListener('click', () => {
-                    window.location.href = `/dashboard.html?thread=${threadId}`;
+                    window.location.href = `/dashboard?thread=${threadId}`;
                 });
                 watchingList.appendChild(threadElement);
             } catch (error) {
