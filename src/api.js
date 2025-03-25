@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL;
+// 修改API_URL为相对路径
+const API_URL = '/api';
 
 class ApiService {
   static async login(email, password) {
@@ -7,6 +8,7 @@ class ApiService {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 修改为 include
       body: JSON.stringify({ email, password }),
     });
 
@@ -24,6 +26,7 @@ class ApiService {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 修改为 include
       body: JSON.stringify({ email, password, name }),
     });
 
@@ -40,6 +43,7 @@ class ApiService {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
+      credentials: 'include',  // 修改为 include
     });
 
     if (!response.ok) {
@@ -55,6 +59,7 @@ class ApiService {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
+      credentials: 'include',  // 修改为 include
     });
 
     if (!response.ok) {
@@ -70,6 +75,7 @@ class ApiService {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
+      credentials: 'include',  // 修改为 include
     });
 
     if (!response.ok) {
@@ -87,6 +93,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 修改为 include
       body: JSON.stringify({ threadId, content, parentCommentId }),
     });
 
@@ -105,6 +112,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 修改为 include
       body: JSON.stringify({ id: commentId }),
     });
 
@@ -123,6 +131,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 修改为 include
       body: JSON.stringify({ title, isPublic, content }),
     });
 
@@ -139,6 +148,7 @@ class ApiService {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
+      credentials: 'include',  // 添加这一行
     });
 
     if (!response.ok) {
@@ -156,6 +166,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 添加这一行
       body: JSON.stringify(userData),
     });
 
@@ -174,6 +185,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 添加这一行
       body: JSON.stringify(threadData),
     });
 
@@ -192,6 +204,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 添加这一行
       body: JSON.stringify({ id: threadId }),
     });
 
@@ -210,6 +223,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 添加这一行
       body: JSON.stringify({ id: threadId, turnon }),
     });
   
@@ -228,6 +242,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 添加这一行
       body: JSON.stringify({ id: threadId, turnon }),
     });
   
@@ -246,6 +261,7 @@ class ApiService {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',  // 添加这一行
       body: JSON.stringify({ id: commentId, turnon }),
     });
   
