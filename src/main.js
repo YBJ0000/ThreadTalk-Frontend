@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-import { gsap } from 'gsap';
 import { ParticleSystem } from './particles';
 import { Auth } from './auth';
 
