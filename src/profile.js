@@ -23,58 +23,27 @@ class Profile {
             window.location.href = '/';
         });
 
-        document.getElementById('changeImageBtn').addEventListener('click', () => {
-            document.getElementById('imageInput').click();
-        });
-
-        document.getElementById('imageInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('profileImage').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
         document.getElementById('saveProfileBtn').addEventListener('click', async () => {
-            const userData = {};
-            
-            // 只包含已修改的字段
-            const nameInput = document.getElementById('nameInput');
-            const emailInput = document.getElementById('emailInput');
-            const passwordInput = document.getElementById('passwordInput');
-            const profileImage = document.getElementById('profileImage');
-            
-            if (nameInput.value !== this.originalProfile.name) {
-                userData.name = nameInput.value;
-            }
-            
-            if (emailInput.value !== this.originalProfile.email) {
-                userData.email = emailInput.value;
-            }
-            
-            if (passwordInput.value) {
-                userData.password = passwordInput.value;
-            }
-            
-            if (profileImage.src !== this.originalProfile.image) {
-                userData.image = profileImage.src;
-            }
+            const userData = {
+                name: document.getElementById('nameInput').value,
+                email: document.getElementById('emailInput').value,
+                password: document.getElementById('passwordInput').value
+            };
 
-            // 如果没有任何修改，直接返回
-            if (Object.keys(userData).length === 0) {
-                alert('没有检测到任何修改');
-                return;
+            if (!userData.password) {
+                delete userData.password;
             }
 
             try {
                 await ApiService.updateUserProfile(this.token, userData);
-                alert('个人资料更新成功！');
+                alert('Profile updated successfully!');
                 document.getElementById('passwordInput').value = '';
-                // 更新原始数据
-                this.loadUserProfile();
+                // 更新页面上的用户名显示
+                document.getElementById('profileName').textContent = userData.name;
+                // 更新粒子效果
+                if (userData.name) {
+                    this.particleSystem.transformToText(userData.name);
+                }
             } catch (error) {
                 alert(error.message);
             }
@@ -85,18 +54,11 @@ class Profile {
         try {
             const profile = await ApiService.getUserProfile(this.token, this.userId);
             
-            // 保存原始数据用于比较
-            this.originalProfile = {
-                name: profile.name || '',
-                email: profile.email || '',
-                image: profile.image || ''
-            };
-            
-            document.getElementById('nameInput').value = this.originalProfile.name;
-            document.getElementById('emailInput').value = this.originalProfile.email;
-            document.getElementById('profileImage').src = this.originalProfile.image;
-            document.getElementById('profileName').textContent = this.originalProfile.name;
+            document.getElementById('nameInput').value = profile.name || '';
+            document.getElementById('emailInput').value = profile.email || '';
+            document.getElementById('profileName').textContent = profile.name || '';
 
+            // 更新粒子文字
             if (profile.name) {
                 this.particleSystem.transformToText(profile.name);
             }
