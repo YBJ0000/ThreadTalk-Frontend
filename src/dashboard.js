@@ -11,8 +11,9 @@ class Dashboard {
       return;
     }
 
-    // 先设置logout事件监听器
+    // 先设置基础功能的事件监听器
     this.setupLogoutHandler();
+    this.setupNewThreadHandler();
     
     // 然后再设置其他功能
     this.setupScene();
@@ -29,6 +30,48 @@ class Dashboard {
       logoutBtn.addEventListener('click', () => {
         localStorage.clear();
         window.location.href = '/';
+      });
+    }
+  }
+
+  setupNewThreadHandler() {
+    const newThreadBtn = document.getElementById('newThreadBtn');
+    const cancelThreadBtn = document.getElementById('cancelThread');
+    const submitThreadBtn = document.getElementById('submitThread');
+    const newThreadModal = document.getElementById('newThreadModal');
+
+    if (newThreadBtn) {
+      newThreadBtn.addEventListener('click', () => {
+        newThreadModal.classList.remove('hidden');
+      });
+    }
+
+    if (cancelThreadBtn) {
+      cancelThreadBtn.addEventListener('click', () => {
+        newThreadModal.classList.add('hidden');
+      });
+    }
+
+    if (submitThreadBtn) {
+      submitThreadBtn.addEventListener('click', async () => {
+        const title = document.getElementById('newThreadTitle').value;
+        const content = document.getElementById('newThreadContent').value;
+        const isPublic = document.getElementById('threadIsPublic').checked;
+        
+        if (!title || !content) {
+          alert('Please fill in all fields');
+          return;
+        }
+      
+        try {
+          await ApiService.createThread(this.token, title, isPublic, content);
+          newThreadModal.classList.add('hidden');
+          document.getElementById('newThreadTitle').value = '';
+          document.getElementById('newThreadContent').value = '';
+          this.loadThreads();
+        } catch (error) {
+          alert(error.message);
+        }
       });
     }
   }
