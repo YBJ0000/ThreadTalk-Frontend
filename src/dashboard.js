@@ -369,24 +369,55 @@ class Dashboard {
       const comments = await ApiService.getComments(this.token, threadId);
       const commentsList = document.getElementById('commentsList');
       commentsList.innerHTML = '';
-
+  
       comments.forEach(comment => {
+        const isLiked = comment.likes && comment.likes[this.userId];
         const commentElement = document.createElement('div');
         commentElement.className = 'comment-item';
         commentElement.innerHTML = `
-                <div class="comment-content">
-                  <p>${comment.content}</p>
-                  <span class="comment-date">${new Date(comment.createdAt).toLocaleDateString()}</span>
-                </div>
-                ${comment.creatorId === parseInt(this.userId) ? `
-                  <button class="auth-button delete-comment-btn" onclick="window.dashboard.deleteComment(${comment.id})">
-                    delete
-                  </button>
-                ` : ''}
-              `;
+          <div class="comment-content">
+            <p>${comment.content}</p>
+            <div class="comment-metadata">
+              <span class="comment-date">${new Date(comment.createdAt).toLocaleDateString()}</span>
+              <button class="like-comment-btn ${isLiked ? 'active' : ''}" id="like-comment-${comment.id}">
+                ${isLiked ? '❤️' : '🤍'}
+              </button>
+            </div>
+          </div>
+          ${comment.creatorId === parseInt(this.userId) ? `
+            <button class="delete-comment-btn" onclick="window.dashboard.deleteComment(${comment.id})">
+              Delete
+            </button>
+          ` : ''}
+        `;
         commentsList.appendChild(commentElement);
+        
+        // 为点赞按钮添加事件监听器
+        const likeBtn = document.getElementById(`like-comment-${comment.id}`);
+        likeBtn.addEventListener('click', () => this.toggleCommentLike(comment.id));
       });
     } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  async toggleCommentLike(commentId) {
+    try {
+      const likeBtn = document.getElementById(`like-comment-${commentId}`);
+      const isCurrentlyLiked = likeBtn.classList.contains('active');
+      
+      // 先更新UI，提供即时反馈
+      likeBtn.innerHTML = isCurrentlyLiked ? '🤍' : '❤️';
+      likeBtn.classList.toggle('active');
+      
+      // 调用API
+      await ApiService.likeComment(this.token, commentId, !isCurrentlyLiked);
+    } catch (error) {
+      // 如果API调用失败，恢复原来的状态
+      const likeBtn = document.getElementById(`like-comment-${commentId}`);
+      const isCurrentlyLiked = likeBtn.classList.contains('active');
+      likeBtn.innerHTML = isCurrentlyLiked ? '❤️' : '🤍';
+      likeBtn.classList.toggle('active');
       alert(error.message);
     }
   }

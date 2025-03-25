@@ -238,6 +238,24 @@ class ApiService {
   
     return await response.json();
   }
+
+  static async likeComment(token, commentId, turnon) {
+    const response = await fetch(`${API_URL}/comment/like`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: commentId, turnon }),
+    });
+  
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error);
+    }
+  
+    return await response.json();
+  }
 }
 
 export default ApiService;
