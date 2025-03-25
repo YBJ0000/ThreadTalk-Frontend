@@ -11,15 +11,26 @@ class Dashboard {
       return;
     }
 
+    // 先设置logout事件监听器
+    this.setupLogoutHandler();
+    
+    // 然后再设置其他功能
     this.setupScene();
     this.setupParticles();
     this.setupEventListeners();
     this.loadThreads();
-    
-    // 获取用户信息并显示欢迎动画
     this.showWelcomeAnimation();
-    
     this.animate();
+  }
+
+  setupLogoutHandler() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        localStorage.clear();
+        window.location.href = '/';
+      });
+    }
   }
 
   setupScene() {
