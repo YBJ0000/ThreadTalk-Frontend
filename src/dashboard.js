@@ -11,11 +11,11 @@ class Dashboard {
       return;
     }
 
-    // 先设置基础功能的事件监听器
+    // 删除重复的事件监听器设置
     this.setupLogoutHandler();
-    this.setupNewThreadHandler();
+    // 删除这行，因为相关功能已经在 setupEventListeners 中处理
+    // this.setupNewThreadHandler();
     
-    // 然后再设置其他功能
     this.setupScene();
     this.setupParticles();
     this.setupEventListeners();
@@ -23,6 +23,9 @@ class Dashboard {
     this.showWelcomeAnimation();
     this.animate();
   }
+
+  // 删除整个 setupNewThreadHandler 方法，因为这些功能已经在 setupEventListeners 中实现
+  // setupNewThreadHandler() { ... }
 
   setupLogoutHandler() {
     const logoutBtn = document.getElementById('logoutBtn');
@@ -124,12 +127,14 @@ class Dashboard {
   }
 
   setupEventListeners() {
+    // 登出功能
     document.getElementById('logoutBtn').addEventListener('click', () => {
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
       window.location.href = '/';
     });
 
+    // 新建帖子相关
     document.getElementById('newThreadBtn').addEventListener('click', () => {
       document.getElementById('newThreadModal').classList.remove('hidden');
     });
@@ -138,7 +143,6 @@ class Dashboard {
       document.getElementById('newThreadModal').classList.add('hidden');
     });
 
-    // 在 setupEventListeners 方法中
     document.getElementById('submitThread').addEventListener('click', async () => {
       const title = document.getElementById('newThreadTitle').value;
       const content = document.getElementById('newThreadContent').value;
@@ -160,6 +164,7 @@ class Dashboard {
       }
     });
 
+    // 评论相关
     document.getElementById('submitComment').addEventListener('click', async () => {
       const content = document.getElementById('newComment').value;
       const threadId = this.currentThreadId;
@@ -173,7 +178,34 @@ class Dashboard {
         alert(error.message);
       }
     });
-  }
+
+    // 编辑帖子相关
+    document.getElementById('cancelEditThread').addEventListener('click', () => {
+      document.getElementById('editThreadModal').classList.add('hidden');
+    });
+
+    document.getElementById('submitEditThread').addEventListener('click', async () => {
+      try {
+        const threadData = {
+          id: this.currentThreadId,
+          title: document.getElementById('editThreadTitle').value,
+          content: document.getElementById('editThreadContent').value,
+          isPublic: document.getElementById('editThreadIsPublic').checked,
+          lock: document.getElementById('editThreadLock').checked
+        };
+
+        await ApiService.updateThread(this.token, threadData);
+        document.getElementById('editThreadModal').classList.add('hidden');
+        this.showThreadDetail(this.currentThreadId);
+        this.loadThreads();
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+
+    // 将 dashboard 实例添加到 window 对象
+    window.dashboard = this;
+}
 
   async loadThreads() {
     try {
@@ -268,37 +300,6 @@ class Dashboard {
       document.getElementById('editThreadIsPublic').checked = thread.isPublic;
       document.getElementById('editThreadLock').checked = thread.lock;
       document.getElementById('editThreadModal').classList.remove('hidden');
-  }
-  
-  // 在 setupEventListeners 方法中添加编辑相关的事件监听
-  setupEventListeners() {
-      // ... existing event listeners ...
-  
-      document.getElementById('cancelEditThread').addEventListener('click', () => {
-        document.getElementById('editThreadModal').classList.add('hidden');
-      });
-  
-      document.getElementById('submitEditThread').addEventListener('click', async () => {
-        try {
-          const threadData = {
-            id: this.currentThreadId,
-            title: document.getElementById('editThreadTitle').value,
-            content: document.getElementById('editThreadContent').value,
-            isPublic: document.getElementById('editThreadIsPublic').checked,
-            lock: document.getElementById('editThreadLock').checked
-          };
-  
-          await ApiService.updateThread(this.token, threadData);
-          document.getElementById('editThreadModal').classList.add('hidden');
-          this.showThreadDetail(this.currentThreadId); // 刷新帖子详情
-          this.loadThreads(); // 刷新帖子列表
-        } catch (error) {
-          alert(error.message);
-        }
-      });
-  
-      // 将 dashboard 实例添加到 window 对象，以便在 HTML 中调用
-      window.dashboard = this;
   }
 
   async loadComments(threadId) {
