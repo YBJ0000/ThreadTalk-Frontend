@@ -39,21 +39,42 @@ class Profile {
         });
 
         document.getElementById('saveProfileBtn').addEventListener('click', async () => {
-            const userData = {
-                name: document.getElementById('nameInput').value,
-                email: document.getElementById('emailInput').value,
-                password: document.getElementById('passwordInput').value,
-                image: document.getElementById('profileImage').src
-            };
+            const userData = {};
+            
+            // 只包含已修改的字段
+            const nameInput = document.getElementById('nameInput');
+            const emailInput = document.getElementById('emailInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const profileImage = document.getElementById('profileImage');
+            
+            if (nameInput.value !== this.originalProfile.name) {
+                userData.name = nameInput.value;
+            }
+            
+            if (emailInput.value !== this.originalProfile.email) {
+                userData.email = emailInput.value;
+            }
+            
+            if (passwordInput.value) {
+                userData.password = passwordInput.value;
+            }
+            
+            if (profileImage.src !== this.originalProfile.image) {
+                userData.image = profileImage.src;
+            }
 
-            if (!userData.password) {
-                delete userData.password;
+            // 如果没有任何修改，直接返回
+            if (Object.keys(userData).length === 0) {
+                alert('没有检测到任何修改');
+                return;
             }
 
             try {
                 await ApiService.updateUserProfile(this.token, userData);
-                alert('Profile updated successfully!');
+                alert('个人资料更新成功！');
                 document.getElementById('passwordInput').value = '';
+                // 更新原始数据
+                this.loadUserProfile();
             } catch (error) {
                 alert(error.message);
             }
@@ -64,12 +85,18 @@ class Profile {
         try {
             const profile = await ApiService.getUserProfile(this.token, this.userId);
             
-            document.getElementById('nameInput').value = profile.name || '';
-            document.getElementById('emailInput').value = profile.email || '';
-            document.getElementById('profileImage').src = profile.image || '';
-            document.getElementById('profileName').textContent = profile.name || '';
+            // 保存原始数据用于比较
+            this.originalProfile = {
+                name: profile.name || '',
+                email: profile.email || '',
+                image: profile.image || ''
+            };
+            
+            document.getElementById('nameInput').value = this.originalProfile.name;
+            document.getElementById('emailInput').value = this.originalProfile.email;
+            document.getElementById('profileImage').src = this.originalProfile.image;
+            document.getElementById('profileName').textContent = this.originalProfile.name;
 
-            // 更新粒子文字
             if (profile.name) {
                 this.particleSystem.transformToText(profile.name);
             }
