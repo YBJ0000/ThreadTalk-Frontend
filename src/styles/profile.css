@@ -5,6 +5,9 @@
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     backdrop-filter: blur(5px);
+    max-height: calc(100vh - 120px);  /* 修改最大高度，减去header和margins的高度 */
+    overflow-y: auto;
+    margin-bottom: 40px;  /* 添加底部边距 */
 }
 
 .profile-image-section {
@@ -24,10 +27,11 @@
 .profile-details {
     max-width: 500px;
     margin: 0 auto;
+    padding: 0 15px;  /* 添加左右内边距 */
 }
 
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;  /* 减小底部间距 */
 }
 
 .input-group label {
@@ -37,8 +41,9 @@
 }
 
 .watching-threads {
-    margin-top: 40px;
-    padding-top: 20px;
+    margin-top: 30px;
+    padding-top: 15px;
+    padding-bottom: 20px;  /* 添加底部内边距 */
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -49,9 +54,9 @@
 
 #watchingList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));  /* 减小卡片最小宽度 */
+    gap: 10px;  /* 减小间距 */
+    margin-top: 10px;
 }
 
 .thread-card {
@@ -76,6 +81,8 @@ canvas {
 .dashboard-container {
     position: relative;
     z-index: 1;
+    height: 100vh;  /* 确保容器占满整个视口高度 */
+    padding-bottom: 20px;  /* 添加底部内边距 */
 }
 
 #profileName {
