@@ -31,7 +31,8 @@
       </div>
 
       <div id="threadDetail" class="thread-detail hidden">
-        <button class="back-button" onclick="hideThreadDetail()">← Back to Threads</button>
+        <!-- 将 onclick 改为调用全局函数 -->
+        <button class="back-button" onclick="window.dashboard.hideThreadDetail()">← Back to Threads</button>
         <div id="threadContent"></div>
         <div class="comments-section">
           <h3>Comments</h3>
