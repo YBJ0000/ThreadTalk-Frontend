@@ -11,6 +11,17 @@ class Dashboard {
       return;
     }
 
+    // 检查 URL 是否包含 thread 参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const threadId = urlParams.get('thread');
+    
+    this.loadThreads().then(() => {
+        // 如果 URL 中有 thread 参数，自动显示该帖子
+        if (threadId) {
+            this.showThreadDetail(parseInt(threadId));
+        }
+    });
+
     // 删除重复的事件监听器设置
     this.setupLogoutHandler();
     // 删除这行，因为相关功能已经在 setupEventListeners 中处理
