@@ -60,6 +60,26 @@
         </div>
       </div>
     </div>
+    <!-- 在 New Thread Modal 之前添加 -->
+    <div id="editThreadModal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Edit Thread</h2>
+        <input type="text" id="editThreadTitle" placeholder="Thread Title" class="auth-input">
+        <textarea id="editThreadContent" placeholder="Thread Content" class="auth-input"></textarea>
+        <div class="thread-visibility">
+          <input type="checkbox" id="editThreadIsPublic">
+          <label for="editThreadIsPublic">Make this thread public</label>
+        </div>
+        <div class="thread-lock">
+          <input type="checkbox" id="editThreadLock">
+          <label for="editThreadLock">Lock this thread</label>
+        </div>
+        <div class="modal-buttons">
+          <button id="cancelEditThread" class="auth-button">Cancel</button>
+          <button id="submitEditThread" class="auth-button">Update Thread</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/src/dashboard.js"></script>

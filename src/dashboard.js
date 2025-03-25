@@ -151,32 +151,81 @@ class Dashboard {
     }
 }
 
+  // 在 showThreadDetail 方法中修改 threadContent.innerHTML
   async showThreadDetail(threadId) {
-    try {
-      const thread = await ApiService.getThread(this.token, threadId);
-      this.currentThreadId = threadId;
-
-      const threadDetail = document.getElementById('threadDetail');
-      const threadContent = document.getElementById('threadContent');
-      
-      threadDetail.classList.remove('hidden');
-      threadContent.innerHTML = `
-        <div class="thread-detail-content">
-          <h2>${thread.title}</h2>
-          <div class="thread-metadata">
-            <span class="thread-date">${new Date(thread.createdAt).toLocaleDateString()}</span>
+      try {
+        const thread = await ApiService.getThread(this.token, threadId);
+        this.currentThreadId = threadId;
+        this.currentThread = thread; // 保存当前线程数据
+  
+        const threadDetail = document.getElementById('threadDetail');
+        const threadContent = document.getElementById('threadContent');
+        
+        threadDetail.classList.remove('hidden');
+        threadContent.innerHTML = `
+          <div class="thread-detail-content">
+            <div class="thread-header">
+              <h2>${thread.title}</h2>
+              ${thread.creatorId === parseInt(this.userId) ? `
+                <button class="auth-button edit-thread-btn" onclick="window.dashboard.showEditThreadModal()">Edit Thread</button>
+              ` : ''}
+            </div>
+            <div class="thread-metadata">
+              <span class="thread-date">${new Date(thread.createdAt).toLocaleDateString()}</span>
+              ${thread.lock ? '<span class="thread-locked">🔒 Locked</span>' : ''}
+            </div>
+            <div class="thread-body">
+              ${thread.content}
+            </div>
           </div>
-          <div class="thread-body">
-            ${thread.content}
-          </div>
-        </div>
-      `;
-
-      this.loadComments(threadId);
-    } catch (error) {
-      alert(error.message);
-    }
-}
+        `;
+  
+        this.loadComments(threadId);
+      } catch (error) {
+        alert(error.message);
+      }
+  }
+  
+  // 添加显示编辑模态框的方法
+  showEditThreadModal() {
+      const thread = this.currentThread;
+      document.getElementById('editThreadTitle').value = thread.title;
+      document.getElementById('editThreadContent').value = thread.content;
+      document.getElementById('editThreadIsPublic').checked = thread.isPublic;
+      document.getElementById('editThreadLock').checked = thread.lock;
+      document.getElementById('editThreadModal').classList.remove('hidden');
+  }
+  
+  // 在 setupEventListeners 方法中添加编辑相关的事件监听
+  setupEventListeners() {
+      // ... existing event listeners ...
+  
+      document.getElementById('cancelEditThread').addEventListener('click', () => {
+        document.getElementById('editThreadModal').classList.add('hidden');
+      });
+  
+      document.getElementById('submitEditThread').addEventListener('click', async () => {
+        try {
+          const threadData = {
+            id: this.currentThreadId,
+            title: document.getElementById('editThreadTitle').value,
+            content: document.getElementById('editThreadContent').value,
+            isPublic: document.getElementById('editThreadIsPublic').checked,
+            lock: document.getElementById('editThreadLock').checked
+          };
+  
+          await ApiService.updateThread(this.token, threadData);
+          document.getElementById('editThreadModal').classList.add('hidden');
+          this.showThreadDetail(this.currentThreadId); // 刷新帖子详情
+          this.loadThreads(); // 刷新帖子列表
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+  
+      // 将 dashboard 实例添加到 window 对象，以便在 HTML 中调用
+      window.dashboard = this;
+  }
 
   async loadComments(threadId) {
     try {

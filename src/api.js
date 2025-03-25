@@ -206,6 +206,28 @@ class ApiService {
       throw error;
     }
   }
+
+  static async updateThread(token, threadData) {
+    try {
+      const response = await fetch(`${API_URL}/thread`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(threadData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default ApiService;

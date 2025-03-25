@@ -65,7 +65,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+}
+
+.edit-thread-btn {
+  padding: 5px 15px;
+  font-size: 14px;
+}
+
+.thread-locked {
+  background: rgba(255, 0, 0, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-size: 12px;
 }
 
 .threads-list {
