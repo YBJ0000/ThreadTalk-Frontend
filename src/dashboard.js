@@ -374,11 +374,16 @@ class Dashboard {
         const commentElement = document.createElement('div');
         commentElement.className = 'comment-item';
         commentElement.innerHTML = `
-                    <p>${comment.content}</p>
-                    ${comment.userId === this.userId ? `
-                        <button class="auth-button" onclick="deleteComment('${comment.id}')">Delete</button>
-                    ` : ''}
-                `;
+                <div class="comment-content">
+                  <p>${comment.content}</p>
+                  <span class="comment-date">${new Date(comment.createdAt).toLocaleDateString()}</span>
+                </div>
+                ${comment.creatorId === parseInt(this.userId) ? `
+                  <button class="auth-button delete-comment-btn" onclick="window.dashboard.deleteComment(${comment.id})">
+                    delete
+                  </button>
+                ` : ''}
+              `;
         commentsList.appendChild(commentElement);
       });
     } catch (error) {
@@ -388,8 +393,11 @@ class Dashboard {
 
   async deleteComment(commentId) {
     try {
-      await ApiService.deleteComment(this.token, commentId);
-      this.loadComments(this.currentThreadId);
+      if (confirm('确定要删除这条评论吗？')) {
+        await ApiService.deleteComment(this.token, commentId);
+        // 删除成功后重新加载评论列表
+        this.loadComments(this.currentThreadId);
+      }
     } catch (error) {
       alert(error.message);
     }
