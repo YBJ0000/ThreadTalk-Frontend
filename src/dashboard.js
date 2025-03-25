@@ -243,6 +243,9 @@ class Dashboard {
         this.currentThreadId = threadId;
         this.currentThread = thread;
   
+        const isLiked = thread.likes && thread.likes[this.userId];
+        const isWatched = thread.watchees && thread.watchees[this.userId];
+  
         const threadDetail = document.getElementById('threadDetail');
         const threadContent = document.getElementById('threadContent');
         
@@ -251,12 +254,20 @@ class Dashboard {
           <div class="thread-detail-content">
             <div class="thread-header">
               <h2>${thread.title}</h2>
-              ${thread.creatorId === parseInt(this.userId) ? `
-                <div class="thread-actions">
+              <div class="thread-actions">
+                <button class="action-btn like-btn ${isLiked ? 'active' : ''}" 
+                  onclick="window.dashboard.toggleLike(${threadId})">
+                  ${isLiked ? '❤️' : '🤍'}
+                </button>
+                <button class="action-btn watch-btn ${isWatched ? 'active' : ''}" 
+                  onclick="window.dashboard.toggleWatch(${threadId})">
+                  ${isWatched ? '👁️' : '👁️‍🗨️'}
+                </button>
+                ${thread.creatorId === parseInt(this.userId) ? `
                   <button class="auth-button edit-thread-btn" onclick="window.dashboard.showEditThreadModal()">Edit</button>
                   <button class="auth-button delete-thread-btn" onclick="window.dashboard.confirmDeleteThread()">Delete</button>
-                </div>
-              ` : ''}
+                ` : ''}
+              </div>
             </div>
             <div class="thread-metadata">
               <span class="thread-date">${new Date(thread.createdAt).toLocaleDateString()}</span>
@@ -272,6 +283,57 @@ class Dashboard {
       } catch (error) {
         alert(error.message);
       }
+  }
+  
+  // 添加toggle方法
+  async toggleLike(threadId) {
+    try {
+      const thread = this.currentThread;
+      const isCurrentlyLiked = thread.likes && thread.likes[this.userId];
+      const response = await ApiService.likeThread(this.token, threadId, !isCurrentlyLiked);
+      
+      // 更新当前线程的状态
+      if (!isCurrentlyLiked) {
+        if (!thread.likes) thread.likes = {};
+        thread.likes[this.userId] = true;
+      } else {
+        delete thread.likes[this.userId];
+      }
+      
+      // 更新UI
+      const likeBtn = document.querySelector('.like-btn');
+      if (likeBtn) {
+        likeBtn.innerHTML = thread.likes[this.userId] ? '❤️' : '🤍';
+        likeBtn.classList.toggle('active', thread.likes[this.userId]);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+  
+  async toggleWatch(threadId) {
+    try {
+      const thread = this.currentThread;
+      const isCurrentlyWatched = thread.watchees && thread.watchees[this.userId];
+      const response = await ApiService.watchThread(this.token, threadId, !isCurrentlyWatched);
+      
+      // 更新当前线程的状态
+      if (!isCurrentlyWatched) {
+        if (!thread.watchees) thread.watchees = {};
+        thread.watchees[this.userId] = true;
+      } else {
+        delete thread.watchees[this.userId];
+      }
+      
+      // 更新UI
+      const watchBtn = document.querySelector('.watch-btn');
+      if (watchBtn) {
+        watchBtn.innerHTML = thread.watchees[this.userId] ? '👁️' : '👁️‍🗨️';
+        watchBtn.classList.toggle('active', thread.watchees[this.userId]);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
   }
   
   // 添加删除确认方法
