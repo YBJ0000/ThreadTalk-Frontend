@@ -385,41 +385,169 @@ class Dashboard {
       document.getElementById('editThreadModal').classList.remove('hidden');
   }
 
-  async loadComments(threadId) {
-    try {
-      const comments = await ApiService.getComments(this.token, threadId);
-      const commentsList = document.getElementById('commentsList');
-      commentsList.innerHTML = '';
+  // 添加时间格式化函数
+  formatTimeAgo(date) {
+      const now = new Date();
+      const commentDate = new Date(date);
+      const diffInSeconds = Math.floor((now - commentDate) / 1000);
   
-      comments.forEach(comment => {
-        const isLiked = comment.likes && comment.likes[this.userId];
-        const commentElement = document.createElement('div');
-        commentElement.className = 'comment-item';
-        commentElement.innerHTML = `
-          <div class="comment-content">
-            <p>${comment.content}</p>
-            <div class="comment-metadata">
-              <span class="comment-date">${new Date(comment.createdAt).toLocaleDateString()}</span>
-              <button class="like-comment-btn ${isLiked ? 'active' : ''}" id="like-comment-${comment.id}">
-                ${isLiked ? '❤️' : '🤍'}
-              </button>
-            </div>
+      if (diffInSeconds < 60) return "Just now";
+  
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      if (diffInMinutes < 60) return `${diffInMinutes} minute(s) ago`;
+  
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours < 24) return `${diffInHours} hour(s) ago`;
+  
+      const diffInDays = Math.floor(diffInHours / 24);
+      if (diffInDays < 7) return `${diffInDays} day(s) ago`;
+  
+      const diffInWeeks = Math.floor(diffInDays / 7);
+      return `${diffInWeeks} week(s) ago`;
+  }
+  
+  // 修改加载评论的方法
+  async loadComments(threadId) {
+      try {
+          const comments = await ApiService.getComments(this.token, threadId);
+          const commentsList = document.getElementById('commentsList');
+          commentsList.innerHTML = '';
+  
+          // 获取所有评论的用户信息
+          const userProfiles = {};
+          for (const comment of comments) {
+              if (!userProfiles[comment.creatorId]) {
+                  try {
+                      userProfiles[comment.creatorId] = await ApiService.getUserProfile(this.token, comment.creatorId);
+                  } catch (error) {
+                      console.error('Error loading user profile:', error);
+                      userProfiles[comment.creatorId] = { name: 'Unknown User' };
+                  }
+              }
+          }
+  
+          // 构建评论树
+          const commentTree = {};
+          const rootComments = [];
+          
+          // 首先创建所有评论节点
+          comments.forEach(comment => {
+              comment.children = [];
+              commentTree[comment.id] = comment;
+          });
+  
+          // 然后建立父子关系
+          comments.forEach(comment => {
+              if (comment.parentCommentId) {
+                  const parent = commentTree[comment.parentCommentId];
+                  if (parent) {
+                      parent.children.push(comment);
+                  } else {
+                      rootComments.push(comment); // 如果找不到父评论，作为根评论处理
+                  }
+              } else {
+                  rootComments.push(comment);
+              }
+          });
+  
+          // 递归渲染评论的函数
+          const renderComment = (comment, level = 0) => {
+              const isLiked = comment.likes && comment.likes[this.userId];
+              const likesCount = comment.likes ? Object.keys(comment.likes).length : 0;
+              const userName = userProfiles[comment.creatorId]?.name || 'Unknown User';
+              const maxNestLevel = 2; // 设置最大嵌套层级（从0开始计数）
+              
+              const commentElement = document.createElement('div');
+              commentElement.className = 'comment-item';
+              commentElement.style.marginLeft = `${level * 20}px`;
+              
+              commentElement.innerHTML = `
+                  <div class="comment-content">
+                      <div class="comment-header">
+                          <span class="comment-user">${userName}</span>
+                          <span class="comment-time">${this.formatTimeAgo(comment.createdAt)}</span>
+                      </div>
+                      <p>${comment.content}</p>
+                      <div class="comment-metadata">
+                          <button class="like-comment-btn ${isLiked ? 'active' : ''}" id="like-comment-${comment.id}">
+                              ${isLiked ? '❤️' : '🤍'} ${likesCount}
+                          </button>
+                          ${!this.currentThread.lock && level <= maxNestLevel ? `
+                              <button class="reply-btn" onclick="window.dashboard.showReplyModal(${comment.id})">
+                                  Reply
+                              </button>
+                          ` : ''}
+                          ${comment.creatorId === parseInt(this.userId) ? `
+                              <button class="delete-comment-btn" onclick="window.dashboard.deleteComment(${comment.id})">
+                                  Delete
+                              </button>
+                          ` : ''}
+                      </div>
+                  </div>
+              `;
+              
+              commentsList.appendChild(commentElement);
+              
+              // 添加点赞事件监听
+              const likeBtn = document.getElementById(`like-comment-${comment.id}`);
+              likeBtn.addEventListener('click', () => this.toggleCommentLike(comment.id));
+              
+              // 递归渲染所有子评论
+              if (comment.children && comment.children.length > 0) {
+                  comment.children
+                      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                      .forEach(child => renderComment(child, level + 1));
+              }
+          };
+  
+          // 渲染根评论
+          rootComments
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .forEach(comment => renderComment(comment));
+  
+      } catch (error) {
+          alert(error.message);
+      }
+  }
+  
+  // 添加回复模态框显示方法
+  showReplyModal(parentCommentId) {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.id = 'replyModal';
+      modal.innerHTML = `
+          <div class="modal-content">
+              <h3>Reply to Comment</h3>
+              <textarea id="replyContent" class="auth-input" placeholder="Write your reply..."></textarea>
+              <div class="modal-buttons">
+                  <button onclick="window.dashboard.cancelReply()" class="auth-button">Cancel</button>
+                  <button onclick="window.dashboard.submitReply(${parentCommentId})" class="auth-button">Reply</button>
+              </div>
           </div>
-          ${comment.creatorId === parseInt(this.userId) ? `
-            <button class="delete-comment-btn" onclick="window.dashboard.deleteComment(${comment.id})">
-              Delete
-            </button>
-          ` : ''}
-        `;
-        commentsList.appendChild(commentElement);
-        
-        // 为点赞按钮添加事件监听器
-        const likeBtn = document.getElementById(`like-comment-${comment.id}`);
-        likeBtn.addEventListener('click', () => this.toggleCommentLike(comment.id));
-      });
-    } catch (error) {
-      alert(error.message);
-    }
+      `;
+      document.body.appendChild(modal);
+  }
+  
+  // 添加取消回复方法
+  cancelReply() {
+      const modal = document.getElementById('replyModal');
+      if (modal) {
+          modal.remove();
+      }
+  }
+  
+  // 添加提交回复方法
+  async submitReply(parentCommentId) {
+      const content = document.getElementById('replyContent').value;
+      if (!content) return;
+  
+      try {
+          await ApiService.createComment(this.token, this.currentThreadId, content, parentCommentId);
+          this.cancelReply();
+          this.loadComments(this.currentThreadId);
+      } catch (error) {
+          alert(error.message);
+      }
   }
 
   async toggleCommentLike(commentId) {
