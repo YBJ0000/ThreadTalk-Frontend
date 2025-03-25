@@ -340,3 +340,7 @@
 .like-comment-btn.active {
   animation: pulse 1s infinite;
 }
+
+#newThreadBtn {
+  width: 30%;
+}
