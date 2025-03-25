@@ -368,7 +368,7 @@ class Dashboard {
   async deleteThread() {
       try {
           await ApiService.deleteThread(this.token, this.currentThreadId);
-          document.getElementById('threadDetail').classList.add('hidden');
+          this.hideThreadDetail(); // 使用 hideThreadDetail 方法来隐藏详情并更新 URL
           this.loadThreads(); // 刷新帖子列表
       } catch (error) {
           alert(error.message);
