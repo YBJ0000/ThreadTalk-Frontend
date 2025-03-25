@@ -40,11 +40,12 @@ export class Auth {
 
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const username = document.getElementById('registerUsername').value;
+      const email = document.getElementById('registerUsername').value;
+      const name = document.getElementById('registerName').value;
       const password = document.getElementById('registerPassword').value;
       const confirmPassword = document.getElementById('registerConfirmPassword').value;
 
-      if (!username || !password || !confirmPassword) {
+      if (!email || !name || !password || !confirmPassword) {
         alert('Please fill in all fields');
         return;
       }
@@ -54,7 +55,7 @@ export class Auth {
         return;
       }
       try {
-        const response = await ApiService.register(username, password, username);
+        const response = await ApiService.register(email, password, name);
         this.token = response.token;
         this.userId = response.userId;
         localStorage.setItem('token', this.token);
