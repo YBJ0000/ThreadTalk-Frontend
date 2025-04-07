@@ -295,7 +295,7 @@ class Dashboard {
               ${thread.lock ? '<span class="thread-locked">🔒 Locked</span>' : ''}
             </div>
             <div class="thread-body">
-              ${thread.content}
+              ${thread.content.split('\n').map(line => `<p>${line}</p>`).join('')}
             </div>
           </div>
         `;
